@@ -5,7 +5,7 @@ app.controller('indexCtrl', ['$scope', '$http', 'NgTableParams', function($scope
     $scope.lastpayout = 0;
     $scope.nextpayout = 0;
 
-    $http.get ('https://raw.githubusercontent.com/jfernanz/lisk-pool/master/docs/poollogs.json').then (function (res) {
+    $http.get ('poollogs.json').then (function (res) {
         $scope.lastpayout = res.data.lastpayout * 1000;
         $scope.nextpayout = moment ($scope.lastpayout).add (1, 'week').valueOf();
         $scope.total = { paid: 0.0, pending: 0.0 };
