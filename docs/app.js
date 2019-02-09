@@ -1,6 +1,6 @@
-var app = angular.module('delegateApp', []);
+var app = angular.module('delegateApp', ["ngTable"]);
 
-app.controller('indexCtrl', function($scope, $http) {
+app.controller('indexCtrl', ['$scope', '$http', 'NgTableParams', function($scope, $http, NgTableParams) {
     $scope.accounts = [];
     $scope.lastpayout = 0;
     $scope.nextpayout = 0;
@@ -8,7 +8,6 @@ app.controller('indexCtrl', function($scope, $http) {
     $http.get ('poollogs.json').then (function (res) {
         $scope.lastpayout = res.data.lastpayout * 1000;
         $scope.nextpayout = moment ($scope.lastpayout).add (1, 'week').valueOf();
-        $scope.accounts = [];
         $scope.total = { paid: 0.0, pending: 0.0 };
 
         for (addr in res.data.accounts) {
@@ -18,9 +17,10 @@ app.controller('indexCtrl', function($scope, $http) {
             $scope.total.paid += res.data.accounts[addr].received;
             $scope.total.pending += res.data.accounts[addr].pending;
         }
+    $scope.tableParams = new NgTableParams({
+      sorting: {
+        received: "desc"
+      }
+    }, {dataset: $scope.accounts});
     });
-
-    $http.get ('https://wallet.lisknode.io/api/delegates/get?username=dakk').then (function (res) {
-        $scope.delegate = res.data.delegate;
-    });
-});
+}]);
